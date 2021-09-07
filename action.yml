@@ -1,6 +1,15 @@
 name: 'SonarScan'
 description: 'Runs sonar-scanner command with the sonar scanner cli 4.6.2. Also supports community edition of sonarqube server.'
 author: 'Prayatna Koirala'
+inputs:
+  SONAR_HOST_URL:
+    description: 'Your sonar host URL'
+    required: true
+    default: ''
+  SONARTOKEN:
+    description: 'Your Sonar Token'
+    required: true
+    default: ''
 runs:
   using: 'composite'
   steps:
@@ -17,6 +26,6 @@ runs:
         /sonar-scanner/bin/sonar-scanner \
         -Dsonar.projectKey=${GITHUB_REPOSITORY#*/}_$(cat GIT_BRANCH_FORMATTED) \
         -Dsonar.sources=. \
-        -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-        -Dsonar.login=${{ secrets.SONARSCANTOKEN }}
+        -Dsonar.host.url=${{ inputs.SONAR_HOST_URL }} \
+        -Dsonar.login=${{ inputs.SONARTOKEN }}
       shell: bash
