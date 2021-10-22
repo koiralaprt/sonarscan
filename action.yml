@@ -30,11 +30,11 @@ runs:
         sudo chmod +x /sonar-scanner/bin/sonar-scanner
       shell: bash
     - run: |
-        echo "${GITHUB_REF#refs/heads/}" | sed -r 's/[/]+/-/g' > GIT_BRANCH_FORMATTED
-        echo "${{ inputs.service_name != '' && '_'||''}}${{ inputs.service_name!='' && inputs.service_name||'_'}}${{ inputs.service_name != '' && '_'||''}}" > GIT_SERVICE_NAME
-        echo "${GITHUB_REPOSITORY#*/}$(cat GIT_SERVICE_NAME)$(cat GIT_BRANCH_FORMATTED)"
+        GIT_BRANCH_FORMATTED=$(echo "${GITHUB_REF#refs/heads/}" | sed -r 's/[/]+/-/g')
+        SERVICE_NAME=${{ inputs.service_name }}
+        GIT_SERVICE_NAME=$(echo "${SERVICE_NAME:+_$SERVICE_NAME}")
         /sonar-scanner/bin/sonar-scanner \
-        -Dsonar.projectKey=${GITHUB_REPOSITORY#*/}$(cat GIT_SERVICE_NAME)$(cat GIT_BRANCH_FORMATTED) \
+        -Dsonar.projectKey=$(echo "${GITHUB_REPOSITORY#*/}${GIT_SERVICE_NAME}_${GIT_BRANCH_FORMATTED}") \
         -Dsonar.sources=${{ inputs.source_dir }} \
         -Dsonar.host.url=${{ inputs.sonar_host_url }} \
         -Dsonar.login=${{ inputs.sonar_token }}
