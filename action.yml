@@ -31,7 +31,7 @@ runs:
       shell: bash
     - run: |
         echo "${GITHUB_REF#refs/heads/}" | sed -r 's/[/]+/-/g' > GIT_BRANCH_FORMATTED
-        echo "${{ inputs.service_name != '' && inputs.service_name||'_' }}" > GIT_SERVICE_NAME
+        echo "${{ inputs.service_name != '' && '_'+inputs.service_name+'_' || '_'}}" > GIT_SERVICE_NAME
         echo "${GITHUB_REPOSITORY#*/}$(cat GIT_SERVICE_NAME)$(cat GIT_BRANCH_FORMATTED)"
         /sonar-scanner/bin/sonar-scanner \
         -Dsonar.projectKey=${GITHUB_REPOSITORY#*/}$(cat GIT_SERVICE_NAME)$(cat GIT_BRANCH_FORMATTED) \
